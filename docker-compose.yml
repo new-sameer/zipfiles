@@ -1,0 +1,63 @@
+version: '3.8'
+
+volumes:
+  mydata:
+    driver: azure_file
+    driver_opts:
+      share_name: amitfilesystem
+      storage_account_name: mynewazurestorage
+
+
+services:
+# Redis Server
+  redis:
+    image: redis:alpine
+    container_name: redis  
+
+  app:
+    build: 
+      context: .
+    volumes:
+      - .:djangoappstorage/test-volume
+    ports:
+      - "8000:8000"
+    image: app:django
+    container_name: django_app
+    command: >     
+      sh -c "python3 manage.py migrate &&
+             python3 manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST="db"
+      - DB_NAME="email_verifier"
+      - DB_USER="postgres"
+      - DB_PASS="postgres"
+
+    depends_on:
+      - db
+
+
+  db:
+    image: postgres:10-alpine
+
+    environment:
+      - POSTGRES_DB=email_verifier
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres    
+  
+  celery:
+    restart: always
+    build:
+      context: .
+    command: celery -A email_verifer worker -l DEBUG
+    volumes:
+      - .:djangoappstorage/test-volume
+
+    environment:
+      - DB_HOST=db
+      - DB_NAME="email_verifier"
+      - DB_USER=postgres
+      - DB_PASS=postgres
+    depends_on:
+      - db
+      - redis
+      - app

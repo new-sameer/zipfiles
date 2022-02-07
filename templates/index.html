@@ -1,0 +1,274 @@
+{% extends "base1.html" %}
+
+{% load static %}
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+ <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <div class="container">
+  <div class="row">
+    {% for message in messages %}
+    <div class="alert alert-{{message.tags}} alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times</span>
+      </button>
+      {{message}}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Home</h1>
+          </div>
+
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 info-box   d-flex justify-content-center row">
+
+            <div class="col-12" style="width: 100%">
+
+              <div class="info-box-content">
+                <h1 class="info-box-text">Bulk Verify Email </h1>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+
+            <!-- /.info-box -->
+          </div>
+
+          <!-- /.col -->
+
+
+        </div>
+          <div class="row">
+          <div class="col-12">
+            <div class="card" id="results-place">
+              <div class="card-header">
+                <h3 class="card-title">Upload CSV FIle</h3>
+                  <div class="card-tools">
+                  <ul class="nav nav-pills ml-auto">
+
+
+                  </ul>
+                </div>
+              </div>
+
+              <!-- ./card-header -->
+              <div class="card-body">
+                  <form method="post" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <div class="row">
+                          <div class="col-xl-4 col-md-6 col-8">
+                              <div class="form-group">
+                                <label for="exampleInputFile">File input</label>
+                                <div class="input-group">
+                                    <input id="chunked_upload_excel" class="form-control" type="file" name="the_file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" required>
+
+
+                                </div>
+                              </div>
+                          </div>
+                          <div class="col-12">
+                              <button class="btn btn-primary" type="submit">Upload</button>
+                          </div>
+                  </div>
+                  </form>
+
+
+              </div>
+
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+              <div class="col-12">
+                <div class="card" id="results-place">
+                  <div class="card-header">
+                    <h3 class="card-title">Upload Fist Name Last Name Combination CSV File</h3>
+                      <div class="card-tools">
+                      <ul class="nav nav-pills ml-auto">
+
+
+                      </ul>
+                    </div>
+                  </div>
+
+                  <!-- ./card-header -->
+                  <div class="card-body">
+                      <form method="post" enctype="multipart/form-data">
+                          {% csrf_token %}
+                          <input name="combinations-csv-file" value="1" hidden>
+                          <div class="row">
+                              <div class="col-xl-4 col-md-6 col-8">
+                                  <div class="form-group">
+                                    <label for="exampleInputFile">File input</label>
+                                    <div class="input-group">
+                                        <input id="chunked_upload_excel" class="form-control" type="file" name="the_file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" required>
+
+
+                                    </div>
+                                  </div>
+                              </div>
+                              <div class="col-12">
+                                  <button class="btn btn-primary" type="submit">Upload</button>
+                              </div>
+                      </div>
+                      </form>
+
+
+                  </div>
+
+                  <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+              </div>
+            </div>
+          <div class="row">
+          <div class="col-12">
+            <div class="card" id="results-place-uploads">
+              <div class="card-header">
+                <h3 class="card-title">All File Uploads</h3>
+                  <div class="card-tools">
+                  <ul class="nav nav-pills ml-auto">
+
+
+                  </ul>
+                </div>
+              </div>
+
+              <!-- ./card-header -->
+              <div class="card-body table-responsive">
+                 <table class="table table-bordered">
+
+                                  <thead>
+                                    <tr>
+                                      <th>File Name</th>
+                                      <th>Start Processing Time</th>
+                                      <th>Status</th>
+
+                                      <th>created_on</th>
+                                      <th>Download</th>
+
+                                    </tr>
+                                  </thead>
+                                  <tbody id="company-data-body">
+
+                                    {% for data in all_file_uploads %}
+                                        <tr>
+                                          <td>{{data.csv_file.name}}</td>
+                                          <td>{{data.start_processing_time}}</td>
+                                          <td>{{data.status}}</td>
+                                          <td>{{data.created_on}}</td>
+                                        {% if data.output_file %}
+                                        <td><a href="{% url 'download' file_id=data.id %}" class="btn btn-success">Download</a> </td>
+                                        {% else %}
+                                        <td></td>
+                                        {% endif %}
+                                        </tr>
+
+                                    {% endfor %}
+
+                                  </tbody>
+                                </table>
+              </div>
+
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+        </div>
+        <!-- /.row -->
+
+      <!-- /.modal -->
+
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+    <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
+      <i class="fas fa-chevron-up"></i>
+    </a>
+  </div>
+  <!-- /.content-wrapper -->
+
+{% endblock %}
+{% block custom_script %}
+
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+<script>
+$(document).ready(function () {
+    {% if processing_upload_exists %}
+    let processing_upload_exists=true;
+    {% else %}
+    let processing_upload_exists=false;
+    {% endif %}
+function check_upload_status(processing_upload_exists){
+    if (processing_upload_exists===true){
+        $('#results-place-uploads').append('<div class="overlay"><i class="fas fa-2x fa-sync-alt fa-spin"></i></div>')
+            $.ajax({
+                    url:"{% url 'check_upload_status' %}",
+                    method:'get',
+                    dataType:'json',
+                    data:{},
+                    success:function (data) {
+                        let string_json=JSON.stringify(data);
+                        let json_data=JSON.parse(string_json);
+
+                        $('#company-data-body').empty();
+                        for (let i = 0; i < json_data.data_list.length; i++) {
+                            if (json_data.data_list[i].download_url==='#'){
+                                $('#company-data-body').append(
+                                    '<tr>'+
+                                    '  <td>'+json_data.data_list[i].json_file+'</td>'+
+                                    '  <td>'+json_data.data_list[i].start_processing_time+'</td>'+
+                                    '  <td>'+json_data.data_list[i].status+'</td>'+
+                                    '  <td>'+json_data.data_list[i].created_on+'</td>'+
+                                    '  <td></td>'+
+                                    '</tr>'
+                                );
+                            }else{
+                                $('#company-data-body').append(
+                                    '<tr>'+
+                                    '  <td>'+json_data.data_list[i].json_file+'</td>'+
+                                    '  <td>'+json_data.data_list[i].start_processing_time+'</td>'+
+                                    '  <td>'+json_data.data_list[i].status+'</td>'+
+                                    '  <td>'+json_data.data_list[i].created_on+'</td>'+
+                                    '  <td><a href="'+json_data.data_list[i].download_url+'" class="btn btn-success">Download</a></td>'+
+                                    '</tr>'
+                                );
+                            }
+
+                        }
+                        $('.overlay').remove();
+
+                        if (json_data.processing_upload_exists===false){
+                            location.reload();
+                        }
+
+
+                    }
+        });
+    }
+
+}
+
+setInterval(function(){check_upload_status(processing_upload_exists);}, 20000);
+})
+
+  </script>
+{% endblock %}
